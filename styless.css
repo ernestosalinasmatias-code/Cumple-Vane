@@ -1,0 +1,111 @@
+/* Reseteo básico y estilos globales */
+* {
+    margin: 0;
+    padding: 0;
+    box-box-sizing: border-box;
+}
+
+body {
+    background-color: #000; /* Fondo negro */
+    color: #fff;
+    font-family: 'Arial', sans-serif; /* Puedes cambiar la fuente si quieres */
+    overflow: hidden; /* Oculta barras de desplazamiento */
+    height: 100vh;
+    cursor: crosshair; /* Cambia el cursor para indicar interacción */
+}
+
+/* Contenedor principal para el scroll infinito */
+.content-container {
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* El contenido principal que se anima */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /* Animación de scroll infinito hacia arriba */
+    animation: scrollLoop 20s linear infinite; 
+}
+
+/* Duplicamos el contenido para el loop suave */
+.content-container::after {
+    content: ""; /* No necesitamos contenido real aquí, solo un espacio */
+    display: block;
+    height: 100%; /* El mismo tamaño que .main-content */
+}
+
+/* Definición de la animación de scroll infinito */
+@keyframes scrollLoop {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-50%); /* Se desplaza hacia arriba hasta la mitad del contenido duplicado */
+    }
+}
+
+/* Sección de mensajes */
+.message-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Cada sección de mensajes ocupa toda la pantalla */
+    text-align: center;
+    padding: 20px;
+}
+
+/* Estilos para texto neón */
+.neon-text {
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 
+        0 0 5px currentColor,
+        0 0 10px currentColor,
+        0 0 20px currentColor,
+        0 0 40px currentColor,
+        0 0 80px currentColor; /* Efecto de resplandor */
+    border: 2px solid transparent; /* Base para el borde */
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+/* Clases de colores de neón específicos */
+.red-neon { color: #ff3333; border-color: #ff3333; text-shadow: 0 0 10px #ff3333; }
+.blue-neon { color: #33a1ff; border-color: #33a1ff; text-shadow: 0 0 10px #33a1ff; }
+.purple-neon { color: #cc33ff; border-color: #cc33ff; text-shadow: 0 0 10px #cc33ff; }
+.magenta-neon { color: #ff33cc; border-color: #ff33cc; text-shadow: 0 0 10px #ff33cc; }
+.gold-neon { color: #ffd700; border-color: #ffd700; text-shadow: 0 0 10px #ffd700; }
+.green-neon { color: #33ff33; border-color: #33ff33; text-shadow: 0 0 10px #33ff33; }
+.cyan-neon { color: #33ffff; border-color: #33ffff; text-shadow: 0 0 10px #33ffff; }
+
+/* Contenedor para las flores de fondo */
+.flowers-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 200%; /* Suficiente altura para el loop */
+    z-index: -1; /* Detrás del texto */
+    pointer-events: none; /* Las flores no interfieren con los clics */
+}
+
+/* Estilos básicos para las flores generadas por JS */
+.flower {
+    position: absolute;
+    font-size: 2em; /* Tamaño base */
+    opacity: 0.8;
+}
+
+/* Canvas para fuegos artificiales */
+#fireworksCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* No interfiere con los clics en el resto del body */
+}
