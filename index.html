@@ -2,33 +2,954 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¡Feliz Cumpleaños Vaneliz!</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>¡Feliz Cumpleaños Vaneliz! ✨</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #030305;
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            user-select: none;
+        }
+
+        /* Canvas de fuegos artificiales */
+        #fireworksCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* Capa contenedora de flores y corazones flotantes */
+        #elementsContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 2;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* Elemento flor / corazón flotante */
+        .floating-item {
+            position: absolute;
+            animation: floatAndFade 4s ease-in-out forwards;
+            filter: drop-shadow(0 0 8px currentColor);
+            pointer-events: none;
+            will-change: transform, opacity;
+        }
+
+        @keyframes floatAndFade {
+            0% {
+                opacity: 0;
+                transform: translate(0, 20px) scale(0.4) rotate(0deg);
+            }
+            20% {
+                opacity: 0.95;
+                transform: translate(calc(var(--drift) * 0.3), -15px) scale(1.1) rotate(15deg);
+            }
+            80% {
+                opacity: 0.9;
+                transform: translate(calc(var(--drift) * 0.8), -60px) scale(1) rotate(-10deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--drift), -90px) scale(0.6) rotate(25deg);
+            }
+        }
+
+        /* Contenedor central del mensaje */
+        .message-wrapper {
+            position: relative;
+            z-index: 20;
+            width: 90%;
+            max-width: 520px;
+            padding: 4px; /* Espacio para el borde degradado */
+            border-radius: 28px;
+            background: linear-gradient(135deg, #ff007f, #00f2fe, #f7ff00, #9b51e0, #ff0055);
+            background-size: 300% 300%;
+            animation: ledBorderGradient 5s ease infinite;
+            box-shadow: 
+                0 0 25px rgba(255, 0, 128, 0.4),
+                0 0 50px rgba(0, 242, 254, 0.25),
+                inset 0 0 15px rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes ledBorderGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Caja interior oscura con efecto glassmorphism */
+        .neon-card {
+            background: rgba(8, 8, 14, 0.92);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 40px 24px;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Decoración de esquina neón */
+        .neon-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Contenedor del texto con animación de 3 segundos */
+        .text-content {
+            opacity: 0;
+            transform: scale(0.92) translateY(10px);
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+
+        .text-content.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .text-tag {
+            font-family: 'Comfortaa', cursive;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .text-title {
+            font-family: 'Comfortaa', cursive;
+            font-size: 2.1rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 14px;
+        }
+
+        .text-sub {
+            font-size: 1.15rem;
+            line-height: 1.5;
+            font-weight: 400;
+            opacity: 0.95;
+        }
+
+        /* Variantes de colores de texto neón */
+        .neon-yellow {
+            color: #ffe600;
+            text-shadow: 0 0 10px #ffe600, 0 0 25px #ffb700, 0 0 40px #ff9900;
+        }
+
+        .neon-pink {
+            color: #ff3399;
+            text-shadow: 0 0 10px #ff3399, 0 0 25px #ff0066, 0 0 40px #cc0052;
+        }
+
+        .neon-cyan {
+            color: #00f0ff;
+            text-shadow: 0 0 10px #00f0ff, 0 0 25px #00a8ff, 0 0 40px #0077cc;
+        }
+
+        .neon-purple {
+            color: #c75af6;
+            text-shadow: 0 0 10px #c75af6, 0 0 25px #a820f0, 0 0 40px #7b00cc;
+        }
+
+        .neon-green {
+            color: #39ff14;
+            text-shadow: 0 0 10px #39ff14, 0 0 25px #2bcc0e, 0 0 40px #1e9908;
+        }
+
+        /* Indicador de toque interactivo */
+        .tap-hint {
+            position: fixed;
+            bottom: 24px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            z-index: 25;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: pulseHint 2s infinite;
+        }
+
+        @keyframes pulseHint {
+            0%, 100% { opacity: 0.3; transform: scale(0.98); }
+            50% { opacity: 0.85; transform: scale(1.02); }
+        }
+
+        /* Ajustes responsivos para pantallas pequeñas */
+        @media (max-width: 480px) {
+            .neon-card {
+                padding: 30px 18px;
+                min-height: 220px;
+            }
+            .text-title {
+                font-size: 1.65rem;
+            }
+            .text-sub {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <div class="content-container">
-        <div class="main-content" id="mainContent">
-            
-            <div class="message-section">
-                <h1 class="neon-text red-neon">¡Feliz Cumpleaños Vaneliz!</h1>
-                <h2 class="neon-text blue-neon">Felices 23 años</h2>
-                <p class="neon-text purple-neon">"Un año más de aventuras y risas"</p>
-                <p class="neon-text magenta-neon">"Por más coscorrones juntos"</p>
-                <p class="neon-text gold-neon">"Otro año más para poder castigarte (con amor)"</p>
-                <p class="neon-text green-neon">"El mundo es más brillante contigo"</p>
-                <p class="neon-text cyan-neon">"Sigue brillando como siempre"</p>
+    <!-- Canvas para Fuegos Artificiales -->
+    <canvas id="fireworksCanvas"></canvas>
+
+    <!-- Contenedor dinámico de flores y corazones -->
+    <div id="elementsContainer"></div>
+
+    <!-- Tarjeta Central LED Neón -->
+    <div class="message-wrapper">
+        <div class="neon-card">
+            <div class="text-content active" id="textContent">
+                <div class="text-tag neon-cyan" id="textTag">Para Vaneliz 🌻</div>
+                <h1 class="text-title neon-pink" id="textTitle">¡Feliz Cumpleaños!</h1>
+                <p class="text-sub" id="textSub">Hoy celebramos tu vida y todo lo maravillosa que eres ✨</p>
             </div>
-
-            <div class="flowers-background">
-                </div>
-
         </div>
     </div>
 
+    <!-- Indicador para invitar a tocar la pantalla -->
+    <div class="tap-hint">
+        <span>✨ Toca la pantalla para fuegos artificiales ✨</span>
+    </div>
+
+    <script>
+        // --- 1. LISTA DE FRASES Y MENSAJES (EN LOOP) ---
+        const messages = [
+            {
+                tag: "🌻 PARA VANELIZ",
+                title: "¡Feliz Cumpleaños!",
+                sub: "Hoy es un día especial para celebrar a una persona increíble.",
+                colorTheme: "neon-yellow"
+            },
+            {
+                tag: "🎉 UN GRAN DÍA",
+                title: "¡Felices 23 Años!",
+                sub: "Que esta nueva etapa venga llena de aprendizajes, sonrisas y momentos inolvidables.",
+                colorTheme: "neon-pink"
+            },
+            {
+                tag: "🎯 ÉXITO Y METAS",
+                title: "Que cumplas cada meta",
+                sub: "Que todos tus proyectos, sueños y aspiraciones se hagan realidad. ¡Tienes todo para lograrlo!",
+                colorTheme: "neon-cyan"
+            },
+            {
+                tag: "👊 RISAS Y COMPLICIDAD",
+                title: "Por más coscorrones",
+                sub: "Por todas las risas compartidas y las anécdotas que aún nos faltan por vivir.",
+                colorTheme: "neon-purple"
+            },
+            {
+                tag: "😜 CON CARIÑO",
+                title: "Otro año más...",
+                sub: "...para poder castigarte y molestarte con mucho amor.",
+                colorTheme: "neon-pink"
+            },
+            {
+                tag: "⭐ FUTURO BRILLANTE",
+                title: "Mucho éxito siempre",
+                sub: "Que nunca dejes de brillar con esa energía única que te caracteriza.",
+                colorTheme: "neon-green"
+            },
+            {
+                tag: "💖 DESEOS DE CORAZÓN",
+                title: "Por 100 años más",
+                sub: "Deseándote salud, amor infinito, abundancia y felicidad pura hoy y siempre.",
+                colorTheme: "neon-yellow"
+            }
+        ];
+
+        let currentIndex = 0;
+        const textContent = document.getElementById('textContent');
+        const textTag = document.getElementById('textTag');
+        const textTitle = document.getElementById('textTitle');
+        const textSub = document.getElementById('textSub');
+
+        // Ciclo del texto: Visible ~3.2 segundos, transición suave de desvanecimiento
+        function changeMessage() {
+            // Desvanecer mensaje actual
+            textContent.classList.remove('active');
+
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % messages.length;
+                const nextMsg = messages[currentIndex];
+
+                textTag.textContent = nextMsg.tag;
+                textTitle.textContent = nextMsg.title;
+                textSub.textContent = nextMsg.sub;
+
+                // Actualizar clases de color neón
+                textTitle.className = `text-title ${nextMsg.colorTheme}`;
+                textTag.className = `text-tag ${nextMsg.colorTheme}`;
+
+                // Mostrar nuevo mensaje con animación
+                textContent.classList.add('active');
+            }, 700); // Tiempo del desvanecimiento
+        }
+
+        // Cada 4 segundos cambia de frase (3.3s en pantalla + 0.7s de transición)
+        setInterval(changeMessage, 4000);
+
+
+        // --- 2. GENERADOR DE FLORES Y CORAZONES FLOTANTES ---
+        const elementsContainer = document.getElementById('elementsContainer');
+
+        // Tipos de elementos: Girasoles amarillos (mayor frecuencia), rosas rojas, azules, moradas y corazones
+        const decorativeItems = [
+            { symbol: '🌻', color: '#ffd700', size: 34 }, // Girasol
+            { symbol: '🌻', color: '#ffb700', size: 38 }, // Girasol
+            { symbol: '🌹', color: '#ff2a4b', size: 30 }, // Rosa roja
+            { symbol: '🌸', color: '#ff66b2', size: 28 }, // Flor rosa
+            { symbol: '🪻', color: '#9b51e0', size: 30 }, // Flor morada
+            { symbol: '💠', color: '#00d2ff', size: 28 }, // Flor / destello azul
+            { symbol: '💖', color: '#ff1493', size: 26 }, // Corazón
+            { symbol: '💜', color: '#a855f7', size: 26 }, // Corazón morado
+            { symbol: '💙', color: '#38bdf8', size: 26 }, // Corazón azul
+            { symbol: '✨', color: '#ffe600', size: 22 }  // Destello
+        ];
+
+        function spawnFloatingItem() {
+            const itemData = decorativeItems[Math.floor(Math.random() * decorativeItems.length)];
+            const el = document.createElement('div');
+            el.className = 'floating-item';
+            el.innerText = itemData.symbol;
+            el.style.color = itemData.color;
+
+            // Posicionamiento aleatorio alrededor de toda la pantalla
+            const startX = Math.random() * 92 + 4; // Entre 4% y 96% de ancho
+            const startY = Math.random() * 85 + 10; // Entre 10% y 95% de alto
+            const driftX = (Math.random() * 60 - 30) + 'px';
+            const randomSize = itemData.size * (0.8 + Math.random() * 0.4);
+
+            el.style.left = `${startX}vw`;
+            el.style.top = `${startY}vh`;
+            el.style.fontSize = `${randomSize}px`;
+            el.style.setProperty('--drift', driftX);
+
+            elementsContainer.appendChild(el);
+
+            // Eliminar elemento después de que termine la animación
+            setTimeout(() => {
+                if (el.parentNode) {
+                    el.parentNode.removeChild(el);
+                }
+            }, 4100);
+        }
+
+        // Generar flores y corazones continuamente cada 300 milisegundos
+        setInterval(spawnFloatingItem, 320);
+
+
+        // --- 3. SISTEMA DE FUEGOS ARTIFICIALES INTERACTIVOS (CANVAS) ---
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class FireworkParticle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.radius = Math.random() * 2.8 + 1.2;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 6 + 2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.02 + 0.015;
+                this.gravity = 0.08;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 10;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += this.gravity;
+                this.vx *= 0.98;
+                this.vy *= 0.98;
+                this.alpha -= this.decay;
+            }
+        }
+
+        let particles = [];
+        const neonPalette = ['#ffe600', '#ff007f', '#00f2fe', '#a855f7', '#39ff14', '#ff8400', '#ffffff'];
+
+        function explodeFireworks(x, y) {
+            const count = 45;
+            const burstColor = neonPalette[Math.floor(Math.random() * neonPalette.length)];
+            const burstColor2 = neonPalette[Math.floor(Math.random() * neonPalette.length)];
+
+            for (let i = 0; i < count; i++) {
+                const color = Math.random() > 0.4 ? burstColor : burstColor2;
+                particles.push(new FireworkParticle(x, y, color));
+            }
+        }
+
+        function renderFireworks() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update();
+                p.draw();
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+            requestAnimationFrame(renderFireworks);
+        }
+        renderFireworks();
+
+        // Disparar fuegos artificiales al hacer clic o tocar
+        window.addEventListener('pointerdown', (e) => {
+            explodeFireworks(e.clientX, e.clientY);
+        });
+
+        // Fuegos artificiales automáticos ocasionales para dar más vida
+        setInterval(() => {
+            if (particles.length < 20) {
+                const randomX = Math.random() * (canvas.width * 0.8) + (canvas.width * 0.1);
+                const randomY = Math.random() * (canvas.height * 0.6) + (canvas.height * 0.1);
+                explodeFireworks(randomX, randomY);
+            }
+        }, 2200);
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>¡Feliz Cumpleaños Vaneliz! ✨</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #030305;
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            user-select: none;
+        }
+
+        /* Canvas de fuegos artificiales */
+        #fireworksCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* Capa contenedora de flores y corazones flotantes */
+        #elementsContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 2;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* Elemento flor / corazón flotante */
+        .floating-item {
+            position: absolute;
+            animation: floatAndFade 4s ease-in-out forwards;
+            filter: drop-shadow(0 0 8px currentColor);
+            pointer-events: none;
+            will-change: transform, opacity;
+        }
+
+        @keyframes floatAndFade {
+            0% {
+                opacity: 0;
+                transform: translate(0, 20px) scale(0.4) rotate(0deg);
+            }
+            20% {
+                opacity: 0.95;
+                transform: translate(calc(var(--drift) * 0.3), -15px) scale(1.1) rotate(15deg);
+            }
+            80% {
+                opacity: 0.9;
+                transform: translate(calc(var(--drift) * 0.8), -60px) scale(1) rotate(-10deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--drift), -90px) scale(0.6) rotate(25deg);
+            }
+        }
+
+        /* Contenedor central del mensaje */
+        .message-wrapper {
+            position: relative;
+            z-index: 20;
+            width: 90%;
+            max-width: 520px;
+            padding: 4px; /* Espacio para el borde degradado */
+            border-radius: 28px;
+            background: linear-gradient(135deg, #ff007f, #00f2fe, #f7ff00, #9b51e0, #ff0055);
+            background-size: 300% 300%;
+            animation: ledBorderGradient 5s ease infinite;
+            box-shadow: 
+                0 0 25px rgba(255, 0, 128, 0.4),
+                0 0 50px rgba(0, 242, 254, 0.25),
+                inset 0 0 15px rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes ledBorderGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Caja interior oscura con efecto glassmorphism */
+        .neon-card {
+            background: rgba(8, 8, 14, 0.92);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 40px 24px;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Decoración de esquina neón */
+        .neon-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Contenedor del texto con animación de 3 segundos */
+        .text-content {
+            opacity: 0;
+            transform: scale(0.92) translateY(10px);
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+
+        .text-content.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .text-tag {
+            font-family: 'Comfortaa', cursive;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .text-title {
+            font-family: 'Comfortaa', cursive;
+            font-size: 2.1rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 14px;
+        }
+
+        .text-sub {
+            font-size: 1.15rem;
+            line-height: 1.5;
+            font-weight: 400;
+            opacity: 0.95;
+        }
+
+        /* Variantes de colores de texto neón */
+        .neon-yellow {
+            color: #ffe600;
+            text-shadow: 0 0 10px #ffe600, 0 0 25px #ffb700, 0 0 40px #ff9900;
+        }
+
+        .neon-pink {
+            color: #ff3399;
+            text-shadow: 0 0 10px #ff3399, 0 0 25px #ff0066, 0 0 40px #cc0052;
+        }
+
+        .neon-cyan {
+            color: #00f0ff;
+            text-shadow: 0 0 10px #00f0ff, 0 0 25px #00a8ff, 0 0 40px #0077cc;
+        }
+
+        .neon-purple {
+            color: #c75af6;
+            text-shadow: 0 0 10px #c75af6, 0 0 25px #a820f0, 0 0 40px #7b00cc;
+        }
+
+        .neon-green {
+            color: #39ff14;
+            text-shadow: 0 0 10px #39ff14, 0 0 25px #2bcc0e, 0 0 40px #1e9908;
+        }
+
+        /* Indicador de toque interactivo */
+        .tap-hint {
+            position: fixed;
+            bottom: 24px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            z-index: 25;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: pulseHint 2s infinite;
+        }
+
+        @keyframes pulseHint {
+            0%, 100% { opacity: 0.3; transform: scale(0.98); }
+            50% { opacity: 0.85; transform: scale(1.02); }
+        }
+
+        /* Ajustes responsivos para pantallas pequeñas */
+        @media (max-width: 480px) {
+            .neon-card {
+                padding: 30px 18px;
+                min-height: 220px;
+            }
+            .text-title {
+                font-size: 1.65rem;
+            }
+            .text-sub {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas para Fuegos Artificiales -->
     <canvas id="fireworksCanvas"></canvas>
 
-    <script src="script.js"></script>
+    <!-- Contenedor dinámico de flores y corazones -->
+    <div id="elementsContainer"></div>
+
+    <!-- Tarjeta Central LED Neón -->
+    <div class="message-wrapper">
+        <div class="neon-card">
+            <div class="text-content active" id="textContent">
+                <div class="text-tag neon-cyan" id="textTag">Para Vaneliz 🌻</div>
+                <h1 class="text-title neon-pink" id="textTitle">¡Feliz Cumpleaños!</h1>
+                <p class="text-sub" id="textSub">Hoy celebramos tu vida y todo lo maravillosa que eres ✨</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Indicador para invitar a tocar la pantalla -->
+    <div class="tap-hint">
+        <span>✨ Toca la pantalla para fuegos artificiales ✨</span>
+    </div>
+
+    <script>
+        // --- 1. LISTA DE FRASES Y MENSAJES (EN LOOP) ---
+        const messages = [
+            {
+                tag: "🌻 PARA VANELIZ",
+                title: "¡Feliz Cumpleaños!",
+                sub: "Hoy es un día especial para celebrar a una persona increíble.",
+                colorTheme: "neon-yellow"
+            },
+            {
+                tag: "🎉 UN GRAN DÍA",
+                title: "¡Felices 23 Años!",
+                sub: "Que esta nueva etapa venga llena de aprendizajes, sonrisas y momentos inolvidables.",
+                colorTheme: "neon-pink"
+            },
+            {
+                tag: "🎯 ÉXITO Y METAS",
+                title: "Que cumplas cada meta",
+                sub: "Que todos tus proyectos, sueños y aspiraciones se hagan realidad. ¡Tienes todo para lograrlo!",
+                colorTheme: "neon-cyan"
+            },
+            {
+                tag: "👊 RISAS Y COMPLICIDAD",
+                title: "Por más coscorrones",
+                sub: "Por todas las risas compartidas y las anécdotas que aún nos faltan por vivir.",
+                colorTheme: "neon-purple"
+            },
+            {
+                tag: "😜 CON CARIÑO",
+                title: "Otro año más...",
+                sub: "...para poder castigarte y molestarte con mucho amor.",
+                colorTheme: "neon-pink"
+            },
+            {
+                tag: "⭐ FUTURO BRILLANTE",
+                title: "Mucho éxito siempre",
+                sub: "Que nunca dejes de brillar con esa energía única que te caracteriza.",
+                colorTheme: "neon-green"
+            },
+            {
+                tag: "💖 DESEOS DE CORAZÓN",
+                title: "Por 100 años más",
+                sub: "Deseándote salud, amor infinito, abundancia y felicidad pura hoy y siempre.",
+                colorTheme: "neon-yellow"
+            }
+        ];
+
+        let currentIndex = 0;
+        const textContent = document.getElementById('textContent');
+        const textTag = document.getElementById('textTag');
+        const textTitle = document.getElementById('textTitle');
+        const textSub = document.getElementById('textSub');
+
+        // Ciclo del texto: Visible ~3.2 segundos, transición suave de desvanecimiento
+        function changeMessage() {
+            // Desvanecer mensaje actual
+            textContent.classList.remove('active');
+
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % messages.length;
+                const nextMsg = messages[currentIndex];
+
+                textTag.textContent = nextMsg.tag;
+                textTitle.textContent = nextMsg.title;
+                textSub.textContent = nextMsg.sub;
+
+                // Actualizar clases de color neón
+                textTitle.className = `text-title ${nextMsg.colorTheme}`;
+                textTag.className = `text-tag ${nextMsg.colorTheme}`;
+
+                // Mostrar nuevo mensaje con animación
+                textContent.classList.add('active');
+            }, 700); // Tiempo del desvanecimiento
+        }
+
+        // Cada 4 segundos cambia de frase (3.3s en pantalla + 0.7s de transición)
+        setInterval(changeMessage, 4000);
+
+
+        // --- 2. GENERADOR DE FLORES Y CORAZONES FLOTANTES ---
+        const elementsContainer = document.getElementById('elementsContainer');
+
+        // Tipos de elementos: Girasoles amarillos (mayor frecuencia), rosas rojas, azules, moradas y corazones
+        const decorativeItems = [
+            { symbol: '🌻', color: '#ffd700', size: 34 }, // Girasol
+            { symbol: '🌻', color: '#ffb700', size: 38 }, // Girasol
+            { symbol: '🌹', color: '#ff2a4b', size: 30 }, // Rosa roja
+            { symbol: '🌸', color: '#ff66b2', size: 28 }, // Flor rosa
+            { symbol: '🪻', color: '#9b51e0', size: 30 }, // Flor morada
+            { symbol: '💠', color: '#00d2ff', size: 28 }, // Flor / destello azul
+            { symbol: '💖', color: '#ff1493', size: 26 }, // Corazón
+            { symbol: '💜', color: '#a855f7', size: 26 }, // Corazón morado
+            { symbol: '💙', color: '#38bdf8', size: 26 }, // Corazón azul
+            { symbol: '✨', color: '#ffe600', size: 22 }  // Destello
+        ];
+
+        function spawnFloatingItem() {
+            const itemData = decorativeItems[Math.floor(Math.random() * decorativeItems.length)];
+            const el = document.createElement('div');
+            el.className = 'floating-item';
+            el.innerText = itemData.symbol;
+            el.style.color = itemData.color;
+
+            // Posicionamiento aleatorio alrededor de toda la pantalla
+            const startX = Math.random() * 92 + 4; // Entre 4% y 96% de ancho
+            const startY = Math.random() * 85 + 10; // Entre 10% y 95% de alto
+            const driftX = (Math.random() * 60 - 30) + 'px';
+            const randomSize = itemData.size * (0.8 + Math.random() * 0.4);
+
+            el.style.left = `${startX}vw`;
+            el.style.top = `${startY}vh`;
+            el.style.fontSize = `${randomSize}px`;
+            el.style.setProperty('--drift', driftX);
+
+            elementsContainer.appendChild(el);
+
+            // Eliminar elemento después de que termine la animación
+            setTimeout(() => {
+                if (el.parentNode) {
+                    el.parentNode.removeChild(el);
+                }
+            }, 4100);
+        }
+
+        // Generar flores y corazones continuamente cada 300 milisegundos
+        setInterval(spawnFloatingItem, 320);
+
+
+        // --- 3. SISTEMA DE FUEGOS ARTIFICIALES INTERACTIVOS (CANVAS) ---
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class FireworkParticle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.radius = Math.random() * 2.8 + 1.2;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 6 + 2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.02 + 0.015;
+                this.gravity = 0.08;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 10;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += this.gravity;
+                this.vx *= 0.98;
+                this.vy *= 0.98;
+                this.alpha -= this.decay;
+            }
+        }
+
+        let particles = [];
+        const neonPalette = ['#ffe600', '#ff007f', '#00f2fe', '#a855f7', '#39ff14', '#ff8400', '#ffffff'];
+
+        function explodeFireworks(x, y) {
+            const count = 45;
+            const burstColor = neonPalette[Math.floor(Math.random() * neonPalette.length)];
+            const burstColor2 = neonPalette[Math.floor(Math.random() * neonPalette.length)];
+
+            for (let i = 0; i < count; i++) {
+                const color = Math.random() > 0.4 ? burstColor : burstColor2;
+                particles.push(new FireworkParticle(x, y, color));
+            }
+        }
+
+        function renderFireworks() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update();
+                p.draw();
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+            requestAnimationFrame(renderFireworks);
+        }
+        renderFireworks();
+
+        // Disparar fuegos artificiales al hacer clic o tocar
+        window.addEventListener('pointerdown', (e) => {
+            explodeFireworks(e.clientX, e.clientY);
+        });
+
+        // Fuegos artificiales automáticos ocasionales para dar más vida
+        setInterval(() => {
+            if (particles.length < 20) {
+                const randomX = Math.random() * (canvas.width * 0.8) + (canvas.width * 0.1);
+                const randomY = Math.random() * (canvas.height * 0.6) + (canvas.height * 0.1);
+                explodeFireworks(randomX, randomY);
+            }
+        }, 2200);
+    </script>
 </body>
 </html>
